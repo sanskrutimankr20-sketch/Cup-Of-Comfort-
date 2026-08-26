@@ -689,6 +689,300 @@ footer > p {
     .seat-legend {
         gap: 12px;
     }
+    /* =========================================
+   PREMIUM ANIMATIONS
+========================================= */
+
+
+/* ---------- PAGE LOAD ---------- */
+
+.hero-content {
+    animation: heroFadeUp 1.2s ease forwards;
+}
+
+@keyframes heroFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ---------- HERO TITLE ---------- */
+
+.hero h1 {
+    animation: titleReveal 1.3s ease forwards;
+}
+
+@keyframes titleReveal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+        letter-spacing: 8px;
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+        letter-spacing: normal;
+    }
+}
+
+
+/* ---------- HERO BUTTONS ---------- */
+
+.hero-buttons .btn {
+    animation: buttonAppear 1s ease forwards;
+    animation-delay: 0.5s;
+    opacity: 0;
+}
+
+@keyframes buttonAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ---------- BUTTON HOVER ---------- */
+
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: "";
+    position: absolute;
+
+    width: 0;
+    height: 0;
+
+    background: rgba(255, 255, 255, 0.2);
+
+    border-radius: 50%;
+
+    transform: translate(-50%, -50%);
+
+    transition: width 0.5s ease,
+                height 0.5s ease;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+
+/* ---------- ABOUT IMAGE ---------- */
+
+.about-image {
+    overflow: hidden;
+    border-radius: 25px;
+}
+
+.about-image img {
+    transition: transform 0.7s ease;
+}
+
+.about-image:hover img {
+    transform: scale(1.06);
+}
+
+
+/* ---------- MENU CARD ---------- */
+
+.menu-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s ease,
+        box-shadow 0.3s ease;
+}
+
+.menu-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* ---------- MENU ICON ---------- */
+
+.food-icon {
+    transition: transform 0.4s ease;
+}
+
+.menu-card:hover .food-icon {
+    transform: rotate(-8deg) scale(1.15);
+}
+
+
+/* ---------- SEAT ANIMATION ---------- */
+
+.seat {
+    transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.seat:hover:not(.reserved) {
+    transform: translateY(-5px) scale(1.08);
+    box-shadow: 0 6px 12px rgba(60, 35, 25, 0.18);
+}
+
+.seat.selected {
+    animation: seatSelected 0.4s ease;
+}
+
+@keyframes seatSelected {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.18);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+
+/* ---------- OFFER ---------- */
+
+.offer {
+    transition: transform 0.4s ease,
+                box-shadow 0.4s ease;
+}
+
+.offer:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 20px 40px rgba(40, 20, 10, 0.2);
+}
+
+
+/* ---------- CONTACT CARDS ---------- */
+
+.contact-card {
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(60, 35, 25, 0.15);
+}
+
+
+/* ---------- CONTACT ICON ---------- */
+
+.contact-card div {
+    transition: transform 0.4s ease;
+}
+
+.contact-card:hover div {
+    transform: scale(1.2) rotate(5deg);
+}
+
+
+/* ---------- NAVIGATION ---------- */
+
+.nav-links a {
+    position: relative;
+}
+
+.nav-links a::after {
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    bottom: -6px;
+
+    width: 0;
+    height: 2px;
+
+    background: #d5a06a;
+
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
+/* ---------- RESERVATION BOX ---------- */
+
+.reservation-box {
+    transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+}
+
+.reservation-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 45px rgba(60, 35, 25, 0.14);
+}
+
+
+/* ---------- CONFIRMATION ---------- */
+
+.confirmation {
+    animation: confirmationAppear 0.6s ease forwards;
+}
+
+@keyframes confirmationAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+
+/* ---------- FOOTER ---------- */
+
+.footer-logo {
+    transition: transform 0.3s ease;
+}
+
+.footer-logo:hover {
+    transform: scale(1.05);
+}
+
+
+/* ---------- REDUCED MOTION ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+
+}
 
     .about-features {
         flex-wrap: wrap;
