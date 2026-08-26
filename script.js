@@ -1,245 +1,508 @@
 /* =========================================
-   CUP OF COMFORT
-   RESERVATION SYSTEM
+   CUP OF COMFORT - COMPLETE JAVASCRIPT
 ========================================= */
 
+document.addEventListener("DOMContentLoaded", function () {
 
-/* ================= DATE ================= */
+    /* =========================================
+       MOBILE NAVIGATION
+    ========================================= */
 
-const dateInput = document.getElementById("date");
+    const menuToggle = document.querySelector(".menu-toggle");
+    const navLinks = document.querySelector(".nav-links");
 
-const today = new Date();
-
-const year = today.getFullYear();
-
-const month = String(today.getMonth() + 1).padStart(2, "0");
-
-const day = String(today.getDate()).padStart(2, "0");
-
-dateInput.min = `${year}-${month}-${day}`;
-
-
-/* ================= SEAT SELECTION ================= */
-
-const seats = document.querySelectorAll(
-    ".seat:not(.reserved)"
-);
-
-const selectedSeat = document.getElementById(
-    "selectedSeat"
-);
-
-
-seats.forEach(function (seat) {
-
-    seat.addEventListener("click", function () {
-
-        // Remove previously selected seat
-        seats.forEach(function (item) {
-
-            item.classList.remove("selected");
-
+    if (menuToggle && navLinks) {
+        menuToggle.addEventListener("click", function () {
+            navLinks.classList.toggle("active");
         });
 
+        navLinks.querySelectorAll("a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navLinks.classList.remove("active");
+            });
+        });
+    }
 
-        // Select current seat
-        seat.classList.add("selected");
 
+    /* =========================================
+       SMOOTH SCROLL
+    ========================================= */
 
-        // Store seat number
-        selectedSeat.value = seat.textContent.trim();
+    document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+
+        link.addEventListener("click", function (e) {
+
+            const targetId = this.getAttribute("href");
+
+            if (targetId === "#") return;
+
+            const target = document.querySelector(targetId);
+
+            if (target) {
+                e.preventDefault();
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+
+        });
 
     });
 
-});
+
+    /* =========================================
+       MENU CARD SCROLL ANIMATION
+    ========================================= */
+
+    const menuCards =
+        document.querySelectorAll(".menu-card");
+
+    const cardObserver = new IntersectionObserver(
+        function (entries) {
+
+            entries.forEach(function (entry, index) {
+
+                if (entry.isIntersecting) {
+
+                    setTimeout(function () {
+
+                        entry.target.classList.add("show");
+
+                    }, index * 120);
+
+                    cardObserver.unobserve(entry.target);
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.15
+        }
+    );
 
 
-/* ================= RESERVATION FORM ================= */
-
-const reservationForm =
-    document.getElementById("reservationForm");
-
-
-reservationForm.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
+    menuCards.forEach(function (card) {
+        cardObserver.observe(card);
+    });
 
 
-        /* Get values */
+    /* =========================================
+       GENERAL SECTION ANIMATION
+    ========================================= */
 
-        const name =
-            document.getElementById("name").value.trim();
+    const animatedSections =
+        document.querySelectorAll(
+            ".section, .about, .reservation-box, .contact-card, .offer"
+        );
 
-        const phone =
-            document.getElementById("phone").value.trim();
+    const sectionObserver = new IntersectionObserver(
+        function (entries) {
 
-        const date =
-            document.getElementById("date").value;
+            entries.forEach(function (entry) {
 
-        const time =
-            document.getElementById("time").value;
+                if (entry.isIntersecting) {
 
-        const seat =
-            selectedSeat.value;
+                    entry.target.classList.add("show");
+
+                    sectionObserver.unobserve(entry.target);
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.12
+        }
+    );
 
 
-        /* Check seat */
+    animatedSections.forEach(function (section) {
+        sectionObserver.observe(section);
+    });
 
-        if (seat === "") {
 
-            alert(
-                "Please select an available seat first."
-            );
+    /* =========================================
+       SEAT SELECTION
+    ========================================= */
 
+    const seats =
+        document.querySelectorAll(".seat");
+
+    let selectedSeat = null;
+
+
+    seats.forEach(function (seat) {
+
+        // Don't allow already reserved seats
+        if (seat.classList.contains("reserved")) {
             return;
-
         }
 
 
-        /* Check phone number */
+        seat.addEventListener("click", function () {
 
-        if (!/^[0-9]{10}$/.test(phone)) {
-
-            alert(
-                "Please enter a valid 10-digit mobile number."
-            );
-
-            return;
-
-        }
+            // Remove previous selection
+            seats.forEach(function (item) {
+                item.classList.remove("selected");
+            });
 
 
-        /* Generate booking ID */
+            // Select current seat
+            seat.classList.add("selected");
 
-        const bookingId =
-            "COC-" +
-            Math.floor(
-                10000 + Math.random() * 90000
-            );
+            selectedSeat = seat;
 
 
-        /* Confirmation box */
-
-        const confirmation =
-            document.getElementById("confirmation");
-
-
-        confirmation.style.display = "block";
+            // Get seat number
+            const seatNumber =
+                seat.dataset.seat ||
+                seat.textContent.trim();
 
 
-        confirmation.innerHTML = `
+            // Update hidden/input seat field
+            const seatInput =
+                document.querySelector("#selectedSeat");
 
-            <h3>
-                🎉 Reservation Confirmed!
-            </h3>
-
-            <p>
-                Thank you,
-                <strong>${name}</strong>!
-            </p>
-
-            <br>
-
-            <p>
-                <strong>Booking ID:</strong>
-                ${bookingId}
-            </p>
-
-            <p>
-                <strong>Seat:</strong>
-                ${seat}
-            </p>
-
-            <p>
-                <strong>Date:</strong>
-                ${date}
-            </p>
-
-            <p>
-                <strong>Time:</strong>
-                ${time}
-            </p>
-
-            <br>
-
-            <p>
-                ☕ We are waiting for you at
-                <strong>Cup Of Comfort!</strong>
-            </p>
-
-        `;
+            if (seatInput) {
+                seatInput.value = seatNumber;
+            }
 
 
-        /* Make selected seat reserved */
+            // Update displayed selected seat
+            const selectedSeatDisplay =
+                document.querySelector(".selected-seat");
 
-        const selectedElement =
-            document.querySelector(
-                ".seat.selected"
-            );
+            if (selectedSeatDisplay) {
+                selectedSeatDisplay.textContent =
+                    "Selected Seat: " + seatNumber;
+            }
 
-
-        if (selectedElement) {
-
-            selectedElement.classList.remove(
-                "selected"
-            );
-
-            selectedElement.classList.add(
-                "reserved"
-            );
-
-            selectedElement.disabled = true;
-
-        }
-
-
-        /* Reset form */
-
-        reservationForm.reset();
-
-        selectedSeat.value = "";
-
-
-        /* Scroll to confirmation */
-
-        confirmation.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
         });
 
+    });
+
+
+    /* =========================================
+       RESERVATION FORM
+    ========================================= */
+
+    const reservationForm =
+        document.querySelector("#reservationForm");
+
+
+    if (reservationForm) {
+
+        reservationForm.addEventListener(
+            "submit",
+            function (e) {
+
+                e.preventDefault();
+
+
+                // Get form values
+                const nameInput =
+                    document.querySelector(
+                        "#name, #customerName"
+                    );
+
+                const dateInput =
+                    document.querySelector("#date");
+
+                const timeInput =
+                    document.querySelector("#time");
+
+                const guestsInput =
+                    document.querySelector(
+                        "#guests, #numberOfGuests"
+                    );
+
+
+                const name =
+                    nameInput ? nameInput.value.trim() : "";
+
+                const date =
+                    dateInput ? dateInput.value : "";
+
+                const time =
+                    timeInput ? timeInput.value : "";
+
+                const guests =
+                    guestsInput ? guestsInput.value : "1";
+
+
+                // Check seat
+                if (!selectedSeat) {
+
+                    alert(
+                        "Please select an available seat first ☕"
+                    );
+
+                    return;
+                }
+
+
+                // Seat number
+                const seatNumber =
+                    selectedSeat.dataset.seat ||
+                    selectedSeat.textContent.trim();
+
+
+                /* =====================================
+                   RESERVE SEAT
+                ===================================== */
+
+                selectedSeat.classList.remove("selected");
+                selectedSeat.classList.add("reserved");
+
+
+                // Prevent further clicking
+                selectedSeat.style.pointerEvents = "none";
+
+
+                /* =====================================
+                   CONFIRMATION MESSAGE
+                ===================================== */
+
+                const confirmation =
+                    document.querySelector(
+                        ".confirmation"
+                    );
+
+
+                if (confirmation) {
+
+                    confirmation.innerHTML = `
+                        <div class="confirmation-content">
+
+                            <div class="success-icon">
+                                ✓
+                            </div>
+
+                            <h3>
+                                Reservation Confirmed!
+                            </h3>
+
+                            <p>
+                                Thank you ${name || "Guest"} ☕
+                            </p>
+
+                            <p>
+                                Your seat <strong>${seatNumber}</strong>
+                                has been reserved.
+                            </p>
+
+                            <p>
+                                📅 ${date || "Selected Date"}
+                                <br>
+                                ⏰ ${time || "Selected Time"}
+                                <br>
+                                👥 ${guests} Guest(s)
+                            </p>
+
+                            <p>
+                                We look forward to welcoming you
+                                at Cup Of Comfort!
+                            </p>
+
+                        </div>
+                    `;
+
+                    confirmation.style.display = "block";
+
+                    confirmation.classList.remove(
+                        "confirmation-show"
+                    );
+
+                    void confirmation.offsetWidth;
+
+                    confirmation.classList.add(
+                        "confirmation-show"
+                    );
+
+                } else {
+
+                    alert(
+                        "☕ Reservation confirmed for Seat " +
+                        seatNumber
+                    );
+
+                }
+
+
+                /* =====================================
+                   RESET FORM
+                ===================================== */
+
+                reservationForm.reset();
+
+                selectedSeat = null;
+
+            }
+
+        );
+
     }
-);
 
 
-/* ================= MENU CARD ANIMATION ================= */
+    /* =========================================
+       BUTTON RIPPLE EFFECT
+    ========================================= */
 
-const menuCards =
-    document.querySelectorAll(".menu-card");
+    document.querySelectorAll(".btn").forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function (e) {
+
+                    const ripple =
+                        document.createElement("span");
+
+                    ripple.classList.add("ripple");
+
+                    const rect =
+                        button.getBoundingClientRect();
+
+                    const x =
+                        e.clientX - rect.left;
+
+                    const y =
+                        e.clientY - rect.top;
 
 
-menuCards.forEach(function (card) {
+                    ripple.style.left =
+                        x + "px";
 
-    card.addEventListener(
-        "mouseenter",
-        function () {
+                    ripple.style.top =
+                        y + "px";
 
-            card.style.transform =
-                "translateY(-6px)";
+
+                    button.appendChild(ripple);
+
+
+                    setTimeout(function () {
+
+                        ripple.remove();
+
+                    }, 600);
+
+                }
+            );
 
         }
     );
 
 
-    card.addEventListener(
-        "mouseleave",
+    /* =========================================
+       IMAGE HOVER EFFECT
+    ========================================= */
+
+    const aboutImage =
+        document.querySelector(".about-image img");
+
+    if (aboutImage) {
+
+        aboutImage.addEventListener(
+            "mouseenter",
+            function () {
+
+                this.style.transform =
+                    "scale(1.06)";
+
+            }
+        );
+
+
+        aboutImage.addEventListener(
+            "mouseleave",
+            function () {
+
+                this.style.transform =
+                    "scale(1)";
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       NAVBAR SCROLL EFFECT
+    ========================================= */
+
+    const navbar =
+        document.querySelector("nav, .navbar, header");
+
+
+    window.addEventListener(
+        "scroll",
         function () {
 
-            card.style.transform =
-                "translateY(0)";
+            if (!navbar) return;
+
+
+            if (window.scrollY > 50) {
+
+                navbar.classList.add(
+                    "navbar-scrolled"
+                );
+
+            } else {
+
+                navbar.classList.remove(
+                    "navbar-scrolled"
+                );
+
+            }
 
         }
+    );
+
+
+    /* =========================================
+       CURRENT YEAR IN FOOTER
+    ========================================= */
+
+    const yearElement =
+        document.querySelector("#year");
+
+    if (yearElement) {
+
+        yearElement.textContent =
+            new Date().getFullYear();
+
+    }
+
+
+    /* =========================================
+       DATE VALIDATION
+    ========================================= */
+
+    const dateField =
+        document.querySelector("#date");
+
+    if (dateField) {
+
+        const today =
+            new Date().toISOString().split("T")[0];
+
+        dateField.setAttribute(
+            "min",
+            today
+        );
+
+    }
+
+
+    /* =========================================
+       WELCOME MESSAGE
+    ========================================= */
+
+    console.log(
+        "☕ Welcome to Cup Of Comfort!"
     );
 
 });
